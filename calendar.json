@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "year": 2026,
+  "theme": {
+    "preset": "midnight",
+    "accent": "#e9c88a",
+    "snow": true,
+    "shape": "soft",
+    "layout": "grid",
+    "title": "Musical Advent Calendar",
+    "subtitle": "25 days of music & memories"
+  },
+  "doors": []
+}
