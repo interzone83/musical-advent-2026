@@ -1,0 +1,49 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://raw.githubusercontent.com data: blob:; media-src 'self' https://raw.githubusercontent.com blob:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; object-src 'none'; base-uri 'none'">
+<title>Advent Calendar Studio — 2026</title><link rel="stylesheet" href="styles.css">
+</head><body class="editor-page">
+<header class="editor-header"><div><div class="brand">✧ Advent Calendar Studio</div><small class="muted">2026 · Visual designer v1</small></div><div class="row wraprow"><a class="btn ghost small" href="index.html" target="_blank" rel="noopener">View public calendar ↗</a><span class="pill" id="connection-state">Not connected</span></div></header>
+<main class="editor-shell"><section class="editor-panel softcard" aria-label="Calendar controls"><div class="cap">Manage your calendar</div><h2>Design &amp; content</h2>
+<nav class="tabs" aria-label="Editor sections"><button class="tab active" data-tab="appearance" type="button">Appearance</button><button class="tab" data-tab="doors" type="button">Doors</button><button class="tab" data-tab="media" type="button">Media Library</button><button class="tab" data-tab="publish" type="button">Publish</button></nav>
+<div id="tab-appearance" class="tab-content">
+<label class="field"><span>Calendar title</span><input id="setting-title" value="Musical Advent Calendar" maxlength="95"></label>
+<label class="field"><span>Subtitle</span><input id="setting-subtitle" value="25 days of music & memories" maxlength="160"></label>
+<div class="two"><label class="field"><span>Colour theme</span><select id="setting-preset"><option value="midnight">Winter midnight</option><option value="forest">Evergreen</option><option value="berry">Mulled berry</option></select></label><label class="field"><span>Accent colour</span><input id="setting-accent" class="colour" type="color" value="#e9c88a"></label></div>
+<div class="two"><label class="field"><span>Door shape</span><select id="setting-shape"><option value="soft">Soft corners</option><option value="square">Square</option><option value="pill">Rounded</option></select></label><label class="field"><span>Arrangement</span><select id="setting-layout"><option value="grid">Classic grid</option><option value="staggered">Staggered grid</option></select></label></div>
+<label class="row note-row"><input id="setting-snow" type="checkbox" checked> Falling snow on the public calendar</label><p class="hint">The preview updates immediately. Use Save Draft to preserve your changes.</p></div>
+<div id="tab-doors" class="tab-content hidden">
+<label class="field"><span>Choose a door</span><select id="door-day"></select></label><div class="progress"><span id="door-status-dot" class="dot"></span><span id="door-status">Awaiting photo and music</span></div>
+<label class="field"><span>Photo</span><select id="door-photo"><option value="">No photo selected</option></select></label><label class="field"><span>Song</span><select id="door-song"><option value="">No song selected</option></select></label>
+<div class="previewbox" id="photo-preview"><span class="empty">Choose a photograph from the media library</span></div>
+<div class="btnrow"><button class="btn small ghost" id="door-test" type="button">Preview this door</button><button class="btn small ghost" id="go-media" type="button">Add media +</button></div>
+<label class="field"><span>Title shown when opened (optional)</span><input id="door-title" maxlength="100" placeholder="A Christmas memory"></label>
+<label class="field"><span>Personal message (optional)</span><textarea id="door-message" maxlength="1500" placeholder="Write a message to appear behind the door..."></textarea></label>
+<p class="hint">Click a number in the live preview to switch doors. Dates are enforced on the public site, not in the editor.</p></div>
+<div id="tab-media" class="tab-content hidden">
+<p class="muted">Upload files from your phone or computer. New uploads receive random filenames; you'll still see the original names here.</p>
+<label class="field"><span>Upload type</span><select id="upload-kind"><option value="photo">Photograph (JPG, PNG or WebP)</option><option value="song">Music (MP3, M4A or WAV)</option></select></label>
+<label class="field filepicker"><span>Choose file</span><input id="upload-file" type="file" accept="image/jpeg,image/png,image/webp"></label>
+<div class="btnrow"><button class="btn small" id="upload-button" type="button">Upload to GitHub</button><button class="btn small ghost" id="scan-button" type="button">Scan GitHub folders</button></div>
+<p class="hint">Recommended maximum: 20 MB per file. Files are uploaded to the public repository, even before you publish a door.</p>
+<div class="section"><h3>Available files <span class="pill" id="media-count">0</span></h3><div id="media-list"><p class="muted">Connect to GitHub to load your library.</p></div></div></div>
+<div id="tab-publish" class="tab-content hidden">
+<h3>Connect GitHub</h3>
+<p class="muted">To save, enter a fine-grained personal access token with <strong>Contents: Read and write</strong> access to both 2026 repositories. Do not paste your token into chat.</p>
+<label class="field"><span>GitHub access token</span><input type="password" id="github-token" autocomplete="off" spellcheck="false" placeholder="github_pat_…"></label>
+<div class="btnrow"><button class="btn small ghost" id="connect-button" type="button">Connect &amp; load</button><button class="btn small ghost" id="disconnect-button" type="button">Disconnect</button></div>
+<p class="hint">The token is kept only in this browser tab's session storage, not uploaded into your repositories. Use this editor on a device you trust.</p>
+<div class="section"><h3>Progress</h3><div class="progress" id="progress-count">0 of 25 doors have both photo and music.</div><p class="muted" id="saved-time">No draft saved this session.</p>
+<div class="btnrow"><button class="btn" id="save-button" type="button">Save Draft</button><button class="btn ghost" id="publish-button" type="button">Publish Calendar</button></div>
+<p class="hint">Save Draft updates the private repository only. Publish first saves your draft, then updates the public calendar. A partial calendar can be published for testing.</p></div>
+<div class="section"><h3>Important</h3><p class="muted">Unpublished media in the public repository can still be discovered by someone deliberately browsing GitHub. Random filenames are for obscurity, not security. Titles and messages in the published calendar configuration can also be inspected.</p></div></div>
+<div class="section"><div class="row split"><span class="muted" id="dirty-indicator">No unsaved changes</span><button id="quick-save" class="btn small ghost" type="button">Save Draft</button></div><p id="editor-status" class="status" role="status" aria-live="polite"></p></div></section>
+<section class="editor-preview softcard" id="preview-surface" aria-label="Interactive live calendar preview">
+<div class="row split"><div class="cap">Live preview</div><span class="pill">Tap any door to edit it</span></div>
+<header class="masthead"><div class="eyebrow">December 2026</div><h1 id="preview-title">Musical Advent Calendar</h1><p id="preview-subtitle" class="subhead">25 days of music &amp; memories</p></header>
+<div class="calendar-wrap"><div class="calendar-grid" id="preview-grid"></div><div class="calendar-footer">A little surprise behind every door ✨</div></div>
+<p class="editor-door-caption">This preview is unlocked for editing. The public calendar only opens doors on their scheduled day.</p></section></main>
+<dialog id="test-dialog" class="dialog"><div class="dialog-inner"><div class="dialog-head"><div><div class="eyebrow" id="test-day">December 1</div><h2 id="test-title">Preview</h2></div><button class="close" id="test-close" type="button" aria-label="Close">×</button></div><div class="previewbox" id="test-image"></div><p id="test-message" class="reveal-message"></p><audio id="test-audio" controls style="width:100%" class="hidden"></audio></div></dialog>
+<footer class="editor-foot">Musical Advent Calendar Studio v1 · Built for Christmas 2026</footer>
+<script src="editor.js" defer></script>
+</body></html>
