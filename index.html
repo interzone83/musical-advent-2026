@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10182a"><meta name="description" content="A musical Advent calendar filled with music and memories.">
+  <title>Musical Advent Calendar 2026</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="snow" class="snow" aria-hidden="true"></div>
+  <main class="wrap" id="main">
+    <header class="masthead"><div class="eyebrow">December 2026</div><h1 id="calendar-title">Musical Advent Calendar</h1><p id="calendar-subtitle" class="subhead">25 days of music &amp; memories</p></header>
+    <section class="calendar-wrap" aria-label="Advent calendar doors">
+      <div id="calendar-grid" class="calendar-grid"></div>
+      <p id="calendar-footer" class="calendar-footer">A little surprise behind every door ✨</p>
+    </section>
+  </main>
+  <dialog id="door-dialog" class="dialog" aria-labelledby="dialog-title">
+    <div class="dialog-inner"><div class="dialog-head"><div><div class="eyebrow" id="dialog-day">December</div><h2 id="dialog-title">Your surprise</h2></div><button class="close" id="close-door" aria-label="Close door">×</button></div>
+      <img id="dialog-image" class="reveal-image hidden" alt="Door surprise"><div id="dialog-placeholder" class="placeholder-image hidden" aria-hidden="true">♫</div>
+      <p class="reveal-message" id="dialog-message"></p><button class="btn hidden" id="door-play">♫ Play this song</button>
+    </div>
+  </dialog>
+  <div id="nowplaying" class="nowplaying hidden" role="status"><span aria-hidden="true">♫</span><div class="track"><small class="muted">Now playing</small><div class="trackname" id="playing-title"></div></div><button id="toggle-play" aria-label="Pause or resume">❚❚</button><button id="stop-play" aria-label="Stop">×</button></div>
+  <script src="calendar.js" defer></script>
+</body>
+</html>
