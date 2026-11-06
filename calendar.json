@@ -2,13 +2,189 @@
   "version": 1,
   "year": 2026,
   "theme": {
-    "preset": "midnight",
-    "accent": "#e9c88a",
-    "snow": true,
+    "preset": "forest",
+    "accent": "#ff4d4d",
+    "snow": false,
     "shape": "soft",
     "layout": "grid",
     "title": "Musical Advent Calendar",
     "subtitle": "25 days of music & memories"
   },
-  "doors": []
+  "doors": [
+    {
+      "day": 1,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 2,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 3,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 4,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 5,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 6,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 7,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 8,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 9,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 10,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 11,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 12,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 13,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 14,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 15,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 16,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 17,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 18,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 19,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 20,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 21,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 22,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 23,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 24,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    },
+    {
+      "day": 25,
+      "photo": "",
+      "song": "",
+      "title": "",
+      "message": ""
+    }
+  ]
 }
