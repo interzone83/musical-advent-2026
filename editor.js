@@ -15,7 +15,7 @@ function photoSrc(a){return a?`https://raw.githubusercontent.com/${PUBLIC}/main/
 function status(msg,kind=''){let el=$('editor-status');el.textContent=msg;el.className='status '+kind;}
 function setDirty(yes=true){dirty=yes;$('dirty-indicator').textContent=dirty?'● Unsaved draft changes':'✓ All draft changes saved';$('dirty-indicator').style.color=dirty?'var(--accent)':'';}
 function setBusy(val){busy=val;for(let id of ['connect-button','save-button','quick-save','publish-button','upload-button','scan-button'])$(id).disabled=val;}
-function setTab(id){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('.tab-content').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+id));}
+function setTab(id){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('.tab-content').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+id));if(id==='order')renderOrder();}
 function randomId(){let b=crypto.getRandomValues(new Uint8Array(16));return Array.from(b,x=>x.toString(16).padStart(2,'0')).join('');}
 function safeBase64(bytes){let parts=[];for(let i=0;i<bytes.length;i+=8192)parts.push(String.fromCharCode(...bytes.subarray(i,i+8192)));return btoa(parts.join(''));}
 function encodeText(s){return safeBase64(new TextEncoder().encode(s));}
@@ -26,6 +26,94 @@ async function getJson(repo,path){try{let v=await api(pathUrl(repo,path));if(!v.
 async function writeJson(repo,path,data,sha){let body={message:`Advent Studio: update ${path}`,content:encodeText(JSON.stringify(data,null,2)+'\n')};if(sha)body.sha=sha;let r=await api(pathUrl(repo,path),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return r.content?.sha||null;}
 function ensureDoor(day){let d=draft.doors.find(x=>Number(x.day)===day);if(!d){d={day,photoId:'',songId:'',title:'',message:'',chosenBy:'',songTitle:'',artist:''};draft.doors.push(d);}return d;}
 function selectedDoor(){return ensureDoor(selected);}
+
+let orderHistory=[],orderDrag=null;
+function orderedDoorRows(fill=false){return Array.from({length:25},(_,i)=>fill?ensureDoor(i+1):(draft.doors.find(d=>Number(d.day)===i+1)||{day:i+1}));}
+function applyDoorRows(rows){draft.doors=rows.map((d,i)=>{d.day=i+1;return d;});}
+function orderChanged(message){setDirty();renderAll();status(message+' Save Draft to keep this order; Publish to update the public calendar.','good');}
+function moveDoorContents(from,to){
+  if(!Number.isInteger(from)||!Number.isInteger(to)||from<1||to<1||from>25||to>25||from===to)return false;
+  const rows=orderedDoorRows(true);
+  orderHistory.push(rows.slice());if(orderHistory.length>15)orderHistory.shift();
+  const moved=rows.splice(from-1,1)[0];rows.splice(to-1,0,moved);
+  applyDoorRows(rows);
+  orderChanged('Moved the contribution from December '+from+' to December '+to+'.');
+  return true;
+}
+function shuffleDoorContents(){
+  const rows=orderedDoorRows(true);
+  orderHistory.push(rows.slice());if(orderHistory.length>15)orderHistory.shift();
+  for(let i=rows.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rows[i],rows[j]]=[rows[j],rows[i]];}
+  applyDoorRows(rows);orderChanged('Shuffled all 25 contributions, including unassigned doors.');
+}
+function undoDoorOrder(){
+  if(!orderHistory.length)return;
+  applyDoorRows(orderHistory.pop());
+  orderChanged('Restored the previous contribution order.');
+}
+function endOrderDrag(e,cancel=false){
+  if(!orderDrag||e.pointerId!==orderDrag.pointerId)return;
+  const drag=orderDrag;orderDrag=null;
+  try{drag.handle.releasePointerCapture(drag.pointerId);}catch{}
+  document.querySelectorAll('.order-row').forEach(row=>row.classList.remove('is-dragging','drop-target'));
+  if(!cancel&&drag.active&&drag.to!==drag.from)moveDoorContents(drag.from,drag.to);
+}
+function moveOrderDrag(e){
+  if(!orderDrag||e.pointerId!==orderDrag.pointerId)return;
+  const d=orderDrag;
+  if(!d.active&&Math.abs(e.clientY-d.startY)<7)return;
+  d.active=true;e.preventDefault();
+  const hovered=document.elementFromPoint(e.clientX,e.clientY)?.closest('.order-row');
+  if(hovered&&$('order-list').contains(hovered))d.to=Number(hovered.dataset.day);
+  document.querySelectorAll('.order-row').forEach(row=>{
+    row.classList.toggle('is-dragging',Number(row.dataset.day)===d.from);
+    row.classList.toggle('drop-target',Number(row.dataset.day)===d.to&&d.to!==d.from);
+  });
+  if(e.clientY<90)window.scrollBy(0,-16);
+  else if(e.clientY>window.innerHeight-90)window.scrollBy(0,16);
+}
+function startOrderDrag(e,day,handle){
+  if(orderDrag||(e.pointerType==='mouse'&&e.button!==0))return;
+  e.preventDefault();
+  orderDrag={from:day,to:day,pointerId:e.pointerId,handle,startY:e.clientY,active:false};
+  handle.setPointerCapture(e.pointerId);
+}
+function renderOrder(){
+  const list=$('order-list');list.replaceChildren();
+  $('order-undo').disabled=!orderHistory.length;
+  for(let day=1;day<=25;day++){
+    const d=draft.doors.find(x=>Number(x.day)===day)||{},row=document.createElement('div');
+    row.className='order-row';row.dataset.day=String(day);row.setAttribute('role','listitem');
+    const grip=document.createElement('button');grip.type='button';grip.className='order-handle';grip.textContent='⠿';
+    grip.setAttribute('aria-label','Drag the December '+day+' contribution, or use the arrow buttons');
+    grip.addEventListener('pointerdown',e=>startOrderDrag(e,day,grip));
+    grip.addEventListener('pointermove',moveOrderDrag);
+    grip.addEventListener('pointerup',e=>endOrderDrag(e));
+    grip.addEventListener('pointercancel',e=>endOrderDrag(e,true));
+    grip.addEventListener('lostpointercapture',e=>endOrderDrag(e,true));
+    grip.addEventListener('keydown',e=>{
+      if(e.key==='ArrowUp'||e.key==='ArrowDown'){
+        e.preventDefault();const next=day+(e.key==='ArrowUp'?-1:1);
+        if(moveDoorContents(day,next))$('order-list').querySelector('[data-day="'+next+'"] .order-handle')?.focus({preventScroll:true});
+      }
+    });
+    const date=document.createElement('span');date.className='order-date';date.textContent='Dec '+day;
+    const details=document.createElement('span');details.className='order-details';
+    const person=document.createElement('strong');person.textContent=d.chosenBy||'Unassigned';
+    const song=document.createElement('small');song.textContent=(d.songTitle||'No song title')+' · '+(d.artist||'No artist');
+    const media=document.createElement('small');media.textContent='Photo '+(asset(d.photoId)?'✓':'—')+'  ·  Audio '+(asset(d.songId)?'✓':'—');
+    details.append(person,song,media);
+    const controls=document.createElement('span');controls.className='order-controls';
+    for(const [step,symbol,label] of [[-1,'↑','Move up'],[1,'↓','Move down']]){
+      const b=document.createElement('button');b.type='button';b.className='order-step';b.textContent=symbol;
+      b.disabled=day+step<1||day+step>25;
+      b.setAttribute('aria-label',label+' December '+day+' contribution');
+      b.onclick=()=>{const next=day+step;if(moveDoorContents(day,next))$('order-list').querySelector('[data-day="'+next+'"] .order-step')?.focus({preventScroll:true});};
+      controls.append(b);
+    }
+    row.append(grip,date,details,controls);list.append(row);
+  }
+}
 function backgroundAsset(){const a=asset(draft.theme.backgroundImageId);return a&&a.kind==='background'&&typeof a.path==='string'&&a.path.startsWith('media/backgrounds/')?a:null;}
 function renderBackgroundOptions(){
   const el=$('setting-background-image'),id=draft.theme.backgroundImageId||'';
@@ -117,9 +205,9 @@ function renderLibrary(){
     row.append(btn);list.append(row);
   }
 }
-function renderAll(){renderBackgroundOptions();themePreview();renderGrid();renderDoor();renderLibrary();}
+function renderAll(){renderBackgroundOptions();themePreview();renderGrid();renderDoor();renderLibrary();renderOrder();}
 function feedbackError(e){console.error(e);status(e?.message||String(e),'bad')}
-async function connect(){const v=$('github-token').value.trim()||token;if(!v){status('Enter your GitHub token first.','bad');setTab('publish');return}token=v;setBusy(true);status('Checking GitHub access…');try{await api(`/repos/${PRIVATE}`);await api(`/repos/${PUBLIC}`);let [a,b,c]=await Promise.all([getJson(PRIVATE,'draft.json'),getJson(PRIVATE,'media-library.json'),getJson(PUBLIC,'calendar.json')]);if(a.value){draft={...a.value,theme:{...DEF_THEME,...a.value.theme},doors:Array.isArray(a.value.doors)?a.value.doors:[]};shas.draft=a.sha}if(b.value){library={...b.value,assets:Array.isArray(b.value.assets)?b.value.assets:[]};shas.library=b.sha}shas.public=c.sha;connected=true;sessionStorage.setItem('advent_2026_github_token',token);$('connection-state').textContent='Connected to GitHub';$('github-token').value='';themeForm();renderAll();setDirty(false);status('Connected. Private draft and media library loaded.','good');}catch(e){connected=false;$('connection-state').textContent='Connection failed';if(e.status===404)status('Cannot access a repository. Grant the GitHub token access to BOTH repositories and check their names.','bad');else feedbackError(e)}finally{setBusy(false)}}
+async function connect(){const v=$('github-token').value.trim()||token;if(!v){status('Enter your GitHub token first.','bad');setTab('publish');return}token=v;setBusy(true);status('Checking GitHub access…');try{await api(`/repos/${PRIVATE}`);await api(`/repos/${PUBLIC}`);let [a,b,c]=await Promise.all([getJson(PRIVATE,'draft.json'),getJson(PRIVATE,'media-library.json'),getJson(PUBLIC,'calendar.json')]);if(a.value){draft={...a.value,theme:{...DEF_THEME,...a.value.theme},doors:Array.isArray(a.value.doors)?a.value.doors:[]};shas.draft=a.sha;orderHistory=[]}if(b.value){library={...b.value,assets:Array.isArray(b.value.assets)?b.value.assets:[]};shas.library=b.sha}shas.public=c.sha;connected=true;sessionStorage.setItem('advent_2026_github_token',token);$('connection-state').textContent='Connected to GitHub';$('github-token').value='';themeForm();renderAll();setDirty(false);status('Connected. Private draft and media library loaded.','good');}catch(e){connected=false;$('connection-state').textContent='Connection failed';if(e.status===404)status('Cannot access a repository. Grant the GitHub token access to BOTH repositories and check their names.','bad');else feedbackError(e)}finally{setBusy(false)}}
 async function disconnect(){connected=false;token='';sessionStorage.removeItem('advent_2026_github_token');$('github-token').value='';$('connection-state').textContent='Not connected';status('Disconnected. Unsaved changes remain in this browser tab.');}
 async function saveDraft(silent=false){if(!connected)throw Error('Connect to both GitHub repositories on the Publish tab first.');shas.draft=await writeJson(PRIVATE,'draft.json',draft,shas.draft);shas.library=await writeJson(PRIVATE,'media-library.json',library,shas.library);setDirty(false);$('saved-time').textContent='Draft saved to private GitHub repository: '+new Date().toLocaleString();if(!silent)status('Draft saved privately. Public calendar unchanged.','good');}
 async function doSave(){if(busy)return;setBusy(true);status('Saving private draft…');try{await saveDraft()}catch(e){feedbackError(e)}finally{setBusy(false)}}
@@ -288,7 +376,7 @@ function applyImport(){
 }
 
 function showTest(){let d=selectedDoor(),a=asset(d.photoId),s=asset(d.songId);$('test-day').textContent=`December ${selected}, 2026`;$('test-title').textContent=d.title||('December '+selected+(selected%100>=11&&selected%100<=13?'th':selected%10===1?'st':selected%10===2?'nd':selected%10===3?'rd':'th'));$('test-message').textContent=(d.chosenBy?'Chosen by '+d.chosenBy:'')+(d.message?'\n'+d.message:'')+(d.songTitle?'\n'+d.songTitle+(d.artist?' — '+d.artist:''):'');let zone=$('test-image');zone.replaceChildren();if(a){let img=new Image();img.alt=a.name;img.src=photoSrc(a);zone.append(img)}else{let m=document.createElement('div');m.className='empty';m.textContent='No photo assigned';zone.append(m)}let audio=$('test-audio');audio.pause();audio.removeAttribute('src');audio.load();audio.classList.toggle('hidden',!s);if(s){audio.src=photoSrc(s);audio.load()}$('test-dialog').showModal();}
-function listeners(){document.querySelectorAll('.tab').forEach(el=>el.onclick=()=>setTab(el.dataset.tab));for(let [key,id] of [['title','setting-title'],['subtitle','setting-subtitle'],['preset','setting-preset'],['accent','setting-accent'],['shape','setting-shape'],['layout','setting-layout']]){$(id).addEventListener(key==='accent'?'input':'change',()=>{draft.theme[key]=$(id).value;setDirty();themePreview()});if(key==='title'||key==='subtitle')$(id).addEventListener('input',()=>{draft.theme[key]=$(id).value;setDirty();themePreview()});}$('setting-snow').onchange=()=>{draft.theme.snow=$('setting-snow').checked;setDirty()};
+function listeners(){document.querySelectorAll('.tab').forEach(el=>el.onclick=()=>setTab(el.dataset.tab));$('order-shuffle').onclick=shuffleDoorContents;$('order-undo').onclick=undoDoorOrder;for(let [key,id] of [['title','setting-title'],['subtitle','setting-subtitle'],['preset','setting-preset'],['accent','setting-accent'],['shape','setting-shape'],['layout','setting-layout']]){$(id).addEventListener(key==='accent'?'input':'change',()=>{draft.theme[key]=$(id).value;setDirty();themePreview()});if(key==='title'||key==='subtitle')$(id).addEventListener('input',()=>{draft.theme[key]=$(id).value;setDirty();themePreview()});}$('setting-snow').onchange=()=>{draft.theme.snow=$('setting-snow').checked;setDirty()};
 $('setting-use-background').onchange=()=>{draft.theme.useBackgroundImage=$('setting-use-background').checked;setDirty();themePreview()};
 $('setting-background-image').onchange=()=>{draft.theme.backgroundImageId=$('setting-background-image').value;setDirty();renderBackgroundOptions();themePreview()};
 $('go-background-media').onclick=()=>{mediaFilter='photo';setTab('media');renderLibrary()};
