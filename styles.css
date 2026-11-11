@@ -11,3 +11,5 @@
 .door.photo-revealed::after{content:none}
 .door.photo-revealed .door-number{position:absolute;top:7px;left:9px;z-index:1;font:700 1rem/1 system-ui,sans-serif;color:#fff;text-shadow:0 1px 5px #000,0 0 2px #000}
 .door.photo-revealed .door-word{position:absolute;bottom:0;left:0;right:0;padding:20px 4px 7px;text-align:center;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.72));text-shadow:0 1px 3px #000}
+
+.seek-row{display:flex;align-items:center;gap:8px;margin-top:5px;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}.seek-row input[type=range]{width:100%;min-width:40px;flex:1;accent-color:var(--accent);cursor:pointer}.seek-row input[type=range]:disabled{opacity:.4;cursor:default}.nowplaying .track{min-width:0}@media(max-width:600px){.nowplaying{gap:8px;padding:10px}.nowplaying button{padding:8px}.seek-row{gap:5px}}
