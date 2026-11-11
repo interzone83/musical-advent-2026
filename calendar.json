@@ -5,10 +5,12 @@
     "preset": "forest",
     "accent": "#ff4d4d",
     "snow": true,
+    "useBackgroundImage": true,
     "shape": "soft",
     "layout": "grid",
-    "title": "Musical Advent Calendar",
-    "subtitle": "25 days of music & memories"
+    "title": "Bruno's Musical Advent Calendar",
+    "subtitle": "",
+    "backgroundImage": "media/backgrounds/5e6cb231cabbe14f876ef5512e1818b7.jpg"
   },
   "doors": [
     {
@@ -24,7 +26,7 @@
     {
       "day": 2,
       "photo": "",
-      "song": "",
+      "song": "media/music/011f055f41ca7685e70c1f32b22f0f4a.mp3",
       "title": "",
       "message": "",
       "chosenBy": "Mamina",
