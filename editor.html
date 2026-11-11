@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.sheetjs.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://raw.githubusercontent.com data: blob:; media-src 'self' https://raw.githubusercontent.com blob:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://docs.google.com; object-src 'none'; base-uri 'none'">
-<title>Advent Calendar Studio — 2026</title><link rel="stylesheet" href="styles.css">
+<title>Advent Calendar Studio — 2026</title><link rel="stylesheet" href="styles.css?v=20261111background1">
 </head><body class="editor-page">
 <header class="editor-header"><div><div class="brand">✧ Advent Calendar Studio</div><small class="muted">2026 · Visual designer v1</small></div><div class="row wraprow"><a class="btn ghost small" href="index.html" target="_blank" rel="noopener">View public calendar ↗</a><span class="pill" id="connection-state">Not connected</span></div></header>
 <main class="editor-shell"><section class="editor-panel softcard" aria-label="Calendar controls"><div class="cap">Manage your calendar</div><h2>Design &amp; content</h2>
@@ -11,7 +11,14 @@
 <label class="field"><span>Subtitle</span><input id="setting-subtitle" value="25 days of music & memories" maxlength="160"></label>
 <div class="two"><label class="field"><span>Colour theme</span><select id="setting-preset"><option value="midnight">Winter midnight</option><option value="forest">Evergreen</option><option value="berry">Mulled berry</option></select></label><label class="field"><span>Accent colour</span><input id="setting-accent" class="colour" type="color" value="#e9c88a"></label></div>
 <div class="two"><label class="field"><span>Door shape</span><select id="setting-shape"><option value="soft">Soft corners</option><option value="square">Square</option><option value="pill">Rounded</option></select></label><label class="field"><span>Arrangement</span><select id="setting-layout"><option value="grid">Classic grid</option><option value="staggered">Staggered grid</option></select></label></div>
-<label class="row note-row"><input id="setting-snow" type="checkbox" checked> Falling snow on the public calendar</label><p class="hint">The preview updates immediately. Use Save Draft to preserve your changes.</p></div>
+<label class="row note-row"><input id="setting-snow" type="checkbox" checked> Falling snow on the public calendar</label>
+<div class="section"><h3>Calendar background</h3>
+<label class="row note-row"><input id="setting-use-background" type="checkbox"> Use a background image</label>
+<label class="field"><span>Choose background image</span><select id="setting-background-image"><option value="">Choose an uploaded image</option></select></label>
+<div id="background-image-preview" class="background-image-choice"><span class="muted">Upload a picture in Media Library, then select it here.</span></div>
+<button id="go-background-media" type="button" class="btn small ghost">Add an image in Media Library</button>
+<p class="hint">The background appears behind all calendar doors. A dark overlay keeps the text readable.</p></div>
+<p class="hint">The preview updates immediately. Use Save Draft to preserve your changes.</p></div>
 <div id="tab-doors" class="tab-content hidden">
 <label class="field"><span>Choose a door</span><select id="door-day"></select></label><div class="progress"><span id="door-status-dot" class="dot"></span><span id="door-status">Awaiting photo and music</span></div>
 <label class="field"><span>Photo</span><select id="door-photo"><option value="">No photo selected</option></select></label><label class="field"><span>Song</span><select id="door-song"><option value="">No song selected</option></select></label>
@@ -43,7 +50,11 @@
 <label class="field filepicker"><span>Choose file</span><input id="upload-file" type="file" accept="image/jpeg,image/png,image/webp"></label>
 <div class="btnrow"><button class="btn small" id="upload-button" type="button">Upload to GitHub</button><button class="btn small ghost" id="scan-button" type="button">Scan GitHub folders</button></div>
 <p class="hint">Recommended maximum: 20 MB per file. Files are uploaded to the public repository, even before you publish a door.</p>
-<div class="section"><h3>Available files <span class="pill" id="media-count">0</span></h3><div id="media-list"><p class="muted">Connect to GitHub to load your library.</p></div></div></div>
+<div class="section"><h3>Available files <span class="pill" id="media-count">0</span></h3>
+<div class="tabs media-kind-tabs" role="group" aria-label="Filter available media files">
+<button class="tab active" id="media-filter-images" type="button" aria-pressed="true">Images (0)</button>
+<button class="tab" id="media-filter-audio" type="button" aria-pressed="false">MP3 / Audio (0)</button>
+</div><div id="media-list"><p class="muted">Connect to GitHub to load your library.</p></div></div></div>
 <div id="tab-publish" class="tab-content hidden">
 <h3>Connect GitHub</h3>
 <p class="muted">To save, enter a fine-grained personal access token with <strong>Contents: Read and write</strong> access to both 2026 repositories. Do not paste your token into chat.</p>
@@ -63,5 +74,5 @@
 <dialog id="test-dialog" class="dialog"><div class="dialog-inner"><div class="dialog-head"><div><div class="eyebrow" id="test-day">December 1</div><h2 id="test-title">Preview</h2></div><button class="close" id="test-close" type="button" aria-label="Close">×</button></div><div class="previewbox" id="test-image"></div><p id="test-message" class="reveal-message"></p><audio id="test-audio" controls style="width:100%" class="hidden"></audio></div></dialog>
 <footer class="editor-foot">Musical Advent Calendar Studio v1 · Built for Christmas 2026</footer>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" defer></script>
-<script src="editor.js?v=20261111autoconnect1" defer></script>
+<script src="editor.js?v=20261111background1" defer></script>
 </body></html>
