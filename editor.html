@@ -12,6 +12,10 @@
 <div class="two"><label class="field"><span>Colour theme</span><select id="setting-preset"><option value="midnight">Winter midnight</option><option value="forest">Evergreen</option><option value="berry">Mulled berry</option></select></label><label class="field"><span>Accent colour</span><input id="setting-accent" class="colour" type="color" value="#e9c88a"></label></div>
 <div class="two"><label class="field"><span>Door shape</span><select id="setting-shape"><option value="soft">Soft corners</option><option value="square">Square</option><option value="pill">Rounded</option></select></label><label class="field"><span>Arrangement</span><select id="setting-layout"><option value="grid">Classic grid</option><option value="staggered">Staggered grid</option></select></label></div>
 <label class="row note-row"><input id="setting-snow" type="checkbox" checked> Falling snow on the public calendar</label>
+<div class="section"><h3>Door positions</h3>
+<p class="hint">Change where doors 1–25 appear on the calendar, without changing their dates, songs or photographs. This is separate from Door Order.</p>
+<div class="btnrow" style="margin:13px 0 8px"><button id="shuffle-door-positions" type="button" class="btn small ghost">Randomize door positions</button><button id="reset-door-positions" type="button" class="btn small ghost">Reset to 1–25</button><button id="undo-door-positions" type="button" class="btn small ghost" disabled>Undo</button></div>
+<p id="door-position-status" class="hint" aria-live="polite">Door numbers are displayed in order from 1 to 25.</p></div>
 <div class="section"><h3>Calendar background</h3>
 <label class="row note-row"><input id="setting-use-background" type="checkbox"> Use a background image</label>
 <label class="field"><span>Choose background image</span><select id="setting-background-image"><option value="">Choose an uploaded image</option></select></label>
@@ -82,5 +86,5 @@
 <dialog id="test-dialog" class="dialog"><div class="dialog-inner"><div class="dialog-head"><div><div class="eyebrow" id="test-day">December 1</div><h2 id="test-title">Preview</h2></div><button class="close" id="test-close" type="button" aria-label="Close">×</button></div><div class="previewbox" id="test-image"></div><p id="test-message" class="reveal-message"></p><audio id="test-audio" controls style="width:100%" class="hidden"></audio></div></dialog>
 <footer class="editor-foot">Musical Advent Calendar Studio v1 · Built for Christmas 2026</footer>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" defer></script>
-<script src="editor.js?v=20261111doororder1" defer></script>
+<script src="editor.js?v=20261111visualorder1" defer></script>
 </body></html>
