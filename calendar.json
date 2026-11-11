@@ -16,175 +16,250 @@
       "photo": "media/photos/bcfcefabf8db14a422fc947a54969744.jpg",
       "song": "media/music/f01a182a03c42f45212512d0f04375e2.mp3",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Papou",
+      "songTitle": "La belle histoire",
+      "artist": "Henri Des"
     },
     {
       "day": 2,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Mamina",
+      "songTitle": "J'ai une maison pleine de fenetres",
+      "artist": "Anne Sylvestre"
     },
     {
       "day": 3,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Marion",
+      "songTitle": "Je suis mali",
+      "artist": "Lanomali"
     },
     {
       "day": 4,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Anouck",
+      "songTitle": "D'accord-",
+      "artist": "Marine"
     },
     {
       "day": 5,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Joaquim",
+      "songTitle": "Children",
+      "artist": "Robert Miles"
     },
     {
       "day": 6,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Nicolas",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 7,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Antoine",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 8,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Charlotte",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 9,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Roxane",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 10,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Isadora",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 11,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Embla",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 12,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Lucy",
+      "songTitle": "Against me",
+      "artist": "New Wave"
     },
     {
       "day": 13,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Artie",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 14,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Finn",
+      "songTitle": "Papa Mama Loca Pipa",
+      "artist": "Despicable me 3"
     },
     {
       "day": 15,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Dinah",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 16,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Dinah's children",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 17,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Donna",
+      "songTitle": "Mary's boy child",
+      "artist": "Boney M"
     },
     {
       "day": 18,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Ashwin and co",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 19,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Alice and Hya",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 20,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Louise",
+      "songTitle": "Rockin Around the Christmas Tree",
+      "artist": "Brenda Lee"
     },
     {
       "day": 21,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Grandma",
+      "songTitle": "Holy Night",
+      "artist": ""
     },
     {
       "day": 22,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Lola",
+      "songTitle": "Rattling Bog",
+      "artist": "The Wiggles"
     },
     {
       "day": 23,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Riley",
+      "songTitle": "I like to move it",
+      "artist": "Reel 2 Reel"
     },
     {
       "day": 24,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "Seth",
+      "songTitle": "",
+      "artist": ""
     },
     {
       "day": 25,
       "photo": "",
       "song": "",
       "title": "",
-      "message": ""
+      "message": "",
+      "chosenBy": "XXX",
+      "songTitle": "Song",
+      "artist": "Title"
     }
   ]
 }
