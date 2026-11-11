@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const DEFAULT={year:2026,theme:{preset:'midnight',accent:'#e9c88a',snow:true,shape:'soft',layout:'grid',title:'Musical Advent Calendar',subtitle:'25 days of music & memories'},doors:[]};
+const DEFAULT={year:2026,theme:{preset:'midnight',accent:'#e9c88a',snow:true,useBackgroundImage:false,backgroundImage:'',shape:'soft',layout:'grid',title:'Musical Advent Calendar',subtitle:'25 days of music & memories'},doors:[]};
 const PRESETS={midnight:['#10182a','#243859','#24344f'],forest:['#092a26','#244d41','#1b4c3d'],berry:['#301a2b','#642e43','#532a40']};
 const $=id=>document.getElementById(id);
 // An explicitly requested editor test mode: not authentication or a secure date restriction.
@@ -8,7 +8,14 @@ const previewMode=new URLSearchParams(location.search).get('preview')==='1';
 // Play immediately inside the door tap handler for browser audio permissions.
 let cfg=DEFAULT;let currentAudio=null;let activeTrack='';let activeDay=null;const previewOpened={};
 const safeText=s=>typeof s==='string'?s:'';
-function theme(t){t={...DEFAULT.theme,...t};const p=PRESETS[t.preset]||PRESETS.midnight;let s=document.documentElement.style;s.setProperty('--bg',p[0]);s.setProperty('--bg2',p[1]);s.setProperty('--door',p[2]+'d1');if(/^#[0-9a-f]{6}$/i.test(t.accent))s.setProperty('--accent',t.accent);document.body.classList.toggle('shape-square',t.shape==='square');document.body.classList.toggle('shape-pill',t.shape==='pill');document.body.classList.toggle('layout-staggered',t.layout==='staggered');$('calendar-title').textContent=t.title||DEFAULT.theme.title;$('calendar-subtitle').textContent=t.subtitle||DEFAULT.theme.subtitle;document.title=`${t.title||'Musical Advent Calendar'} ${cfg.year}`;snow(Boolean(t.snow));}
+function theme(t){t={...DEFAULT.theme,...t};const p=PRESETS[t.preset]||PRESETS.midnight;let s=document.documentElement.style;s.setProperty('--bg',p[0]);s.setProperty('--bg2',p[1]);s.setProperty('--door',p[2]+'d1');if(/^#[0-9a-f]{6}$/i.test(t.accent))s.setProperty('--accent',t.accent);document.body.classList.toggle('shape-square',t.shape==='square');document.body.classList.toggle('shape-pill',t.shape==='pill');document.body.classList.toggle('layout-staggered',t.layout==='staggered');$('calendar-title').textContent=t.title||DEFAULT.theme.title;$('calendar-subtitle').textContent=t.subtitle||DEFAULT.theme.subtitle;document.title=`${t.title||'Musical Advent Calendar'} ${cfg.year}`;snow(Boolean(t.snow));
+  const bg=(typeof t.backgroundImage==='string'&&/^media\/photos\/[a-z0-9_-]+\.(?:jpe?g|png|webp)$/i.test(t.backgroundImage))?t.backgroundImage:'';
+  if(t.useBackgroundImage&&bg){
+    document.body.style.backgroundImage='linear-gradient(rgba(16,24,42,.65),rgba(16,24,42,.78)),url("'+bg+'")';
+    document.body.style.backgroundSize='cover';document.body.style.backgroundPosition='center';
+    document.body.style.backgroundRepeat='no-repeat';
+  }else{document.body.style.backgroundImage='';document.body.style.backgroundSize='';document.body.style.backgroundPosition='';document.body.style.backgroundRepeat='';}
+}
 function snow(on){let el=$('snow');el.replaceChildren();if(!on||matchMedia('(prefers-reduced-motion: reduce)').matches)return;for(let i=0;i<28;i++){let x=document.createElement('span');x.textContent=i%3===0?'✳':'·';x.style.left=(i*37.93%100)+'%';x.style.fontSize=(9+i%5*3)+'px';x.style.animationDelay=(-i*.83)+'s';x.style.animationDuration=(9+i%8*2)+'s';el.append(x);}}
 function eligible(d){if(previewMode)return true;const now=new Date(),year=Number(cfg.year)||2026;if(now.getFullYear()>year)return true;if(now.getFullYear()<year)return false;return now.getMonth()===11&&now.getDate()>=d;}
 function opened(){try{return JSON.parse(localStorage.getItem('advent-opened-'+cfg.year))||{}}catch{return {}}}
