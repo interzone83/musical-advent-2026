@@ -26,17 +26,17 @@ async function getJson(repo,path){try{let v=await api(pathUrl(repo,path));if(!v.
 async function writeJson(repo,path,data,sha){let body={message:`Advent Studio: update ${path}`,content:encodeText(JSON.stringify(data,null,2)+'\n')};if(sha)body.sha=sha;let r=await api(pathUrl(repo,path),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return r.content?.sha||null;}
 function ensureDoor(day){let d=draft.doors.find(x=>Number(x.day)===day);if(!d){d={day,photoId:'',songId:'',title:'',message:'',chosenBy:'',songTitle:'',artist:''};draft.doors.push(d);}return d;}
 function selectedDoor(){return ensureDoor(selected);}
-function backgroundAsset(){const a=asset(draft.theme.backgroundImageId);return a&&a.kind==='photo'&&typeof a.path==='string'&&a.path.startsWith('media/photos/')?a:null;}
+function backgroundAsset(){const a=asset(draft.theme.backgroundImageId);return a&&a.kind==='background'&&typeof a.path==='string'&&a.path.startsWith('media/backgrounds/')?a:null;}
 function renderBackgroundOptions(){
   const el=$('setting-background-image'),id=draft.theme.backgroundImageId||'';
   el.replaceChildren();
   const blank=document.createElement('option');blank.value='';blank.textContent='Choose an uploaded image';el.append(blank);
-  for(const a of media().filter(a=>a.kind==='photo').sort((a,b)=>a.name.localeCompare(b.name))){const o=document.createElement('option');o.value=a.id;o.textContent=a.name;el.append(o);}
+  for(const a of media().filter(a=>a.kind==='background').sort((a,b)=>a.name.localeCompare(b.name))){const o=document.createElement('option');o.value=a.id;o.textContent=a.name;el.append(o);}
   el.value=backgroundAsset()?id:'';
   const preview=$('background-image-preview');preview.replaceChildren();
   const a=backgroundAsset();
   if(a){const img=new Image();img.src=photoSrc(a);img.alt='';img.className='background-image-thumb';const label=document.createElement('span');label.textContent=a.name;preview.append(img,label);}
-  else{const message=document.createElement('span');message.className='muted';message.textContent='Upload a picture in Media Library, then select it here.';preview.append(message);}
+  else{const message=document.createElement('span');message.className='muted';message.textContent='Upload a Background Image in Media Library, then select it here.';preview.append(message);}
 }
 function themePreview(){
   const t=draft.theme,p=PRESETS[t.preset]||PRESETS.midnight,el=$('preview-surface');
@@ -55,23 +55,65 @@ function renderPhoto(){let area=$('photo-preview');area.replaceChildren();let a=
 function renderDoor(){let d=selectedDoor();$('door-day').value=String(selected);selectList('door-photo','photo',d.photoId);selectList('door-song','song',d.songId);$('door-title').value=d.title||'';$('door-message').value=d.message||'';$('door-chosen-by').value=d.chosenBy||'';$('door-song-title').value=d.songTitle||'';$('door-artist').value=d.artist||'';let complete=Boolean(asset(d.photoId)&&asset(d.songId));$('door-status-dot').classList.toggle('ok',complete);$('door-status').textContent=complete?'Photo and song assigned — ready':(asset(d.photoId)||asset(d.songId)?'Partially complete':'Awaiting photo and music');renderPhoto();}
 function renderLibrary(){
   const list=$('media-list');list.replaceChildren();
-  const all=media(),photos=all.filter(a=>a.kind==='photo'),songs=all.filter(a=>a.kind==='song');
-  $('media-filter-images').textContent='Images ('+photos.length+')';
-  $('media-filter-audio').textContent='MP3 / Audio ('+songs.length+')';
-  for(const [id,kind] of [['media-filter-images','photo'],['media-filter-audio','song']]){$(id).classList.toggle('active',mediaFilter===kind);$(id).setAttribute('aria-pressed',String(mediaFilter===kind));}
-  const files=(mediaFilter==='photo'?photos:songs).slice().sort((a,b)=>a.name.localeCompare(b.name));
+  const groups={
+    photo:media().filter(a=>a.kind==='photo'),
+    song:media().filter(a=>a.kind==='song'),
+    background:media().filter(a=>a.kind==='background')
+  };
+  const selectors=[
+    ['media-filter-images','photo','Door Images'],
+    ['media-filter-audio','song','Music'],
+    ['media-filter-background','background','Background Images']
+  ];
+  for(const [id,kind,label] of selectors){
+    $(id).textContent=label+' ('+groups[kind].length+')';
+    $(id).classList.toggle('active',mediaFilter===kind);
+    $(id).setAttribute('aria-pressed',String(mediaFilter===kind));
+  }
+  const files=(groups[mediaFilter]||groups.photo).slice().sort((a,b)=>a.name.localeCompare(b.name));
   $('media-count').textContent=String(files.length);
-  if(!files.length){const p=document.createElement('p');p.className='muted';p.textContent=mediaFilter==='photo'?'No images yet. Upload one above or scan the public GitHub folders.':'No audio files yet. Upload an MP3, M4A or WAV above.';list.append(p);return;}
+  if(!files.length){
+    const p=document.createElement('p');p.className='muted';
+    p.textContent=mediaFilter==='photo'?'No door images yet. Upload one above or scan GitHub folders.':
+      mediaFilter==='background'?'No background images yet. Choose Background Image as the upload type to add one.':
+      'No music yet. Upload an MP3, M4A or WAV above.';
+    list.append(p);return;
+  }
   for(const a of files){
     const row=document.createElement('div');row.className='media-item';
-    if(a.kind==='photo'){const img=new Image();img.src=photoSrc(a);img.alt='';img.loading='lazy';row.append(img)}
-    else{const ico=document.createElement('span');ico.textContent='♫';ico.style.fontSize='2rem';row.append(ico)}
-    const detail=document.createElement('div');detail.className='label';const name=document.createElement('div');name.textContent=a.name;
-    const usage=draft.doors.filter(d=>d.photoId===a.id||d.songId===a.id).map(d=>d.day).sort((a,b)=>a-b);
-    const small=document.createElement('small');small.textContent=(a.kind==='photo'?'Image':'Audio')+' · '+(usage.length?'Door '+usage.join(', '):'Unassigned')+(draft.theme.backgroundImageId===a.id?' · Calendar background':'');
+    if(a.kind==='photo'||a.kind==='background'){
+      const img=new Image();img.src=photoSrc(a);img.alt='';img.loading='lazy';row.append(img);
+    }else{
+      const ico=document.createElement('span');ico.textContent='♫';ico.style.fontSize='2rem';row.append(ico);
+    }
+    const detail=document.createElement('div');detail.className='label';
+    const name=document.createElement('div');name.textContent=a.name;
+    const small=document.createElement('small');
+    if(a.kind==='background'){
+      small.textContent='Background Image · '+(draft.theme.backgroundImageId===a.id?'Selected background':'Not selected');
+    }else{
+      const usage=draft.doors.filter(d=>d.photoId===a.id||d.songId===a.id).map(d=>d.day).sort((a,b)=>a-b);
+      small.textContent=(a.kind==='photo'?'Door Image':'Music')+' · '+(usage.length?'Door '+usage.join(', '):'Unassigned');
+    }
     detail.append(name,small);row.append(detail);
-    const btn=document.createElement('button');btn.type='button';btn.className='btn small ghost';btn.textContent='Assign';
-    btn.onclick=()=>{setTab('doors');if(a.kind==='photo')selectedDoor().photoId=a.id;else selectedDoor().songId=a.id;setDirty();renderAll()};
+    const btn=document.createElement('button');btn.type='button';btn.className='btn small ghost';
+    if(a.kind==='background'){
+      btn.textContent='Use as background';
+      btn.onclick=()=>{
+        draft.theme.backgroundImageId=a.id;
+        draft.theme.useBackgroundImage=true;
+        $('setting-use-background').checked=true;
+        setDirty();renderAll();setTab('appearance');
+        status('Background selected in your draft. Use Save Draft to keep it, then Publish to update the public calendar.','good');
+      };
+    }else{
+      btn.textContent='Assign';
+      btn.onclick=()=>{
+        setTab('doors');
+        if(a.kind==='photo')selectedDoor().photoId=a.id;else selectedDoor().songId=a.id;
+        setDirty();renderAll();
+      };
+    }
     row.append(btn);list.append(row);
   }
 }
@@ -86,8 +128,32 @@ let {backgroundImageId,...publicTheme}=draft.theme;
 publicTheme.backgroundImage=draft.theme.useBackgroundImage?backgroundAsset()?.path||'':'';
 let result={version:1,year:2026,theme:publicTheme,doors:[]};for(let day=1;day<=25;day++){let d=draft.doors.find(x=>Number(x.day)===day)||{},p=asset(d.photoId),s=asset(d.songId);result.doors.push({day,photo:p?.path||'',song:s?.path||'',title:String(d.title||''),message:String(d.message||''),chosenBy:String(d.chosenBy||''),songTitle:String(d.songTitle||''),artist:String(d.artist||'')});}shas.public=await writeJson(PUBLIC,'calendar.json',result,shas.public);status('Published! Your public website will update once GitHub Pages finishes deploying.','good');}catch(e){feedbackError(e)}finally{setBusy(false)}}
 function fileToB64(f){return new Promise((resolve,reject)=>{let r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=()=>reject(Error('Could not read selected file.'));r.readAsDataURL(f);})}
-async function upload(){if(!connected){setTab('publish');status('Connect to GitHub before uploading.','bad');return}let kind=$('upload-kind').value,file=$('upload-file').files[0];if(!file){status('Choose a file first.','bad');return}let ext=(file.name.split('.').pop()||'').toLowerCase(),allow=kind==='photo'?['jpg','jpeg','png','webp']:['mp3','m4a','wav'];if(!allow.includes(ext)){status('Unsupported file type for '+kind+'.','bad');return}if(file.size>20*1024*1024){status('This file exceeds the 20 MB editor limit. Compress it first.','bad');return}const path=`media/${kind==='photo'?'photos':'music'}/${randomId()}.${ext}`;setBusy(true);status(`Uploading ${file.name}…`);try{const encoded=await fileToB64(file);await api(pathUrl(PUBLIC,path),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:`Add anonymous Advent ${kind}`,content:encoded})});library.assets.push({id:randomId(),kind,name:file.name,path,size:file.size});shas.library=await writeJson(PRIVATE,'media-library.json',library,shas.library);$('upload-file').value='';setDirty();renderAll();status(`Uploaded “${file.name}” with a random public filename. Assign it on the Doors tab.`,`good`);}catch(e){feedbackError(e);status('Upload issue: '+(e.message||e)+'. If the public upload succeeded before the private save failed, use Scan GitHub folders to recover it.','bad')}finally{setBusy(false)}}
-async function scan(){if(!connected){setTab('publish');status('Connect to GitHub first.','bad');return}setBusy(true);status('Scanning media folders…');try{let count=0;for(let [path,kind] of [['media/photos','photo'],['media/music','song']]){let items=[];try{items=await api(pathUrl(PUBLIC,path))}catch(e){if(e.status===404)continue;throw e}if(!Array.isArray(items))continue;for(let x of items){if(x.type!=='file'||media().some(a=>a.path===x.path))continue;library.assets.push({id:randomId(),kind,name:x.name,path:x.path,size:x.size||0});count++;}}if(count){shas.library=await writeJson(PRIVATE,'media-library.json',library,shas.library);setDirty();renderAll()}status(count?`Imported ${count} new file(s). These use their GitHub filenames as labels.`:'No new media files found.','good')}catch(e){feedbackError(e)}finally{setBusy(false)}}
+async function upload(){
+  if(!connected){setTab('publish');status('Connect to GitHub before uploading.','bad');return}
+  const kind=$('upload-kind').value,file=$('upload-file').files[0];
+  if(!file){status('Choose a file first.','bad');return}
+  const folders={photo:'media/photos',song:'media/music',background:'media/backgrounds'};
+  if(!folders[kind]){status('Select a valid upload type.','bad');return}
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  const allow=kind==='song'?['mp3','m4a','wav']:['jpg','jpeg','png','webp'];
+  if(!allow.includes(ext)){status('Unsupported file type for '+kind+'.','bad');return}
+  if(file.size>20*1024*1024){status('This file exceeds the 20 MB editor limit. Compress it first.','bad');return}
+  const path=folders[kind]+'/'+randomId()+'.'+ext;
+  setBusy(true);status('Uploading '+file.name+'…');
+  try{
+    const encoded=await fileToB64(file);
+    await api(pathUrl(PUBLIC,path),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Add anonymous Advent '+kind,content:encoded})});
+    library.assets.push({id:randomId(),kind,name:file.name,path,size:file.size});
+    shas.library=await writeJson(PRIVATE,'media-library.json',library,shas.library);
+    $('upload-file').value='';mediaFilter=kind;setDirty();renderAll();
+    const next=kind==='background'?'Choose it under Appearance to use it as the calendar background.':'Assign it on the Doors tab.';
+    status('Uploaded “'+file.name+'” as '+(kind==='photo'?'Door Image':kind==='background'?'Background Image':'Music')+'. '+next,'good');
+  }catch(e){
+    feedbackError(e);
+    status('Upload issue: '+(e.message||e)+'. If the public upload succeeded before the private save failed, use Scan GitHub folders to recover it.','bad');
+  }finally{setBusy(false)}
+}
+async function scan(){if(!connected){setTab('publish');status('Connect to GitHub first.','bad');return}setBusy(true);status('Scanning media folders…');try{let count=0;for(let [path,kind] of [['media/photos','photo'],['media/music','song'],['media/backgrounds','background']]){let items=[];try{items=await api(pathUrl(PUBLIC,path))}catch(e){if(e.status===404)continue;throw e}if(!Array.isArray(items))continue;for(let x of items){if(x.type!=='file'||media().some(a=>a.path===x.path))continue;library.assets.push({id:randomId(),kind,name:x.name,path:x.path,size:x.size||0});count++;}}if(count){shas.library=await writeJson(PRIVATE,'media-library.json',library,shas.library);setDirty();renderAll()}status(count?`Imported ${count} new file(s). These use their GitHub filenames as labels.`:'No new media files found.','good')}catch(e){feedbackError(e)}finally{setBusy(false)}}
 
 function excelLibrary(){if(!window.XLSX)throw Error('The Excel reader could not load. Check your internet connection and reload the editor.');return window.XLSX;}
 function downloadImportTemplate(){
@@ -227,7 +293,7 @@ $('setting-use-background').onchange=()=>{draft.theme.useBackgroundImage=$('sett
 $('setting-background-image').onchange=()=>{draft.theme.backgroundImageId=$('setting-background-image').value;setDirty();renderBackgroundOptions();themePreview()};
 $('go-background-media').onclick=()=>{mediaFilter='photo';setTab('media');renderLibrary()};
 $('media-filter-images').onclick=()=>{mediaFilter='photo';renderLibrary()};
-$('media-filter-audio').onclick=()=>{mediaFilter='song';renderLibrary()};$('door-day').onchange=()=>{selected=Number($('door-day').value);renderDoor();renderGrid()};for(let [key,id] of [['photoId','door-photo'],['songId','door-song'],['title','door-title'],['message','door-message'],['chosenBy','door-chosen-by'],['songTitle','door-song-title'],['artist','door-artist']])$(id).addEventListener(['title','message','chosenBy','songTitle','artist'].includes(key)?'input':'change',()=>{selectedDoor()[key]=$(id).value;setDirty();if(key==='photoId'||key==='songId')renderAll();else renderProgress()});$('door-test').onclick=showTest;$('go-media').onclick=()=>setTab('media');$('test-close').onclick=()=>$('test-dialog').close();$('test-dialog').addEventListener('close',()=>{$('test-audio').pause()});$('upload-kind').onchange=()=>{$('upload-file').accept=$('upload-kind').value==='photo'?'image/jpeg,image/png,image/webp':'.mp3,.m4a,.wav,audio/mpeg,audio/mp4,audio/wav';$('upload-file').value=''};$('connect-button').onclick=connect;$('disconnect-button').onclick=disconnect;$('save-button').onclick=doSave;$('quick-save').onclick=doSave;$('publish-button').onclick=publish;$('upload-button').onclick=upload;$('scan-button').onclick=scan;$('import-download').onclick=downloadImportTemplate;$('import-file-button').onclick=previewImportFile;$('import-sheet-button').onclick=previewImportGoogle;$('import-apply').onclick=applyImport;$('import-cancel').onclick=clearImportPreview;window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});}
+$('media-filter-audio').onclick=()=>{mediaFilter='song';renderLibrary()};$('media-filter-background').onclick=()=>{mediaFilter='background';renderLibrary()};$('door-day').onchange=()=>{selected=Number($('door-day').value);renderDoor();renderGrid()};for(let [key,id] of [['photoId','door-photo'],['songId','door-song'],['title','door-title'],['message','door-message'],['chosenBy','door-chosen-by'],['songTitle','door-song-title'],['artist','door-artist']])$(id).addEventListener(['title','message','chosenBy','songTitle','artist'].includes(key)?'input':'change',()=>{selectedDoor()[key]=$(id).value;setDirty();if(key==='photoId'||key==='songId')renderAll();else renderProgress()});$('door-test').onclick=showTest;$('go-media').onclick=()=>setTab('media');$('test-close').onclick=()=>$('test-dialog').close();$('test-dialog').addEventListener('close',()=>{$('test-audio').pause()});$('upload-kind').onchange=()=>{$('upload-file').accept=$('upload-kind').value==='song'?'.mp3,.m4a,.wav,audio/mpeg,audio/mp4,audio/wav':'image/jpeg,image/png,image/webp';$('upload-file').value='';mediaFilter=$('upload-kind').value;renderLibrary()};$('connect-button').onclick=connect;$('disconnect-button').onclick=disconnect;$('save-button').onclick=doSave;$('quick-save').onclick=doSave;$('publish-button').onclick=publish;$('upload-button').onclick=upload;$('scan-button').onclick=scan;$('import-download').onclick=downloadImportTemplate;$('import-file-button').onclick=previewImportFile;$('import-sheet-button').onclick=previewImportGoogle;$('import-apply').onclick=applyImport;$('import-cancel').onclick=clearImportPreview;window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});}
 function init(){for(let n=1;n<=25;n++){let option=document.createElement('option');option.value=n;option.textContent='Door '+n;$('door-day').append(option)}listeners();themeForm();renderAll();setDirty(false);if(token){$('connection-state').textContent='Reconnecting…';status('Restoring GitHub connection from this browser tab…');void connect();}else status('Start designing now. Connect to GitHub to save or upload.');}
 init();
 })();
