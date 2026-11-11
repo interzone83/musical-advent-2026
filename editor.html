@@ -1,11 +1,11 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.sheetjs.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://raw.githubusercontent.com data: blob:; media-src 'self' https://raw.githubusercontent.com blob:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://docs.google.com; object-src 'none'; base-uri 'none'">
-<title>Advent Calendar Studio — 2026</title><link rel="stylesheet" href="styles.css?v=20261111mediakinds2">
+<title>Advent Calendar Studio — 2026</title><link rel="stylesheet" href="styles.css?v=20261111doororder1">
 </head><body class="editor-page">
 <header class="editor-header"><div><div class="brand">✧ Advent Calendar Studio</div><small class="muted">2026 · Visual designer v1</small></div><div class="row wraprow"><a class="btn ghost small" href="index.html" target="_blank" rel="noopener">View public calendar ↗</a><span class="pill" id="connection-state">Not connected</span></div></header>
 <main class="editor-shell"><section class="editor-panel softcard" aria-label="Calendar controls"><div class="cap">Manage your calendar</div><h2>Design &amp; content</h2>
-<nav class="tabs" aria-label="Editor sections"><button class="tab active" data-tab="appearance" type="button">Appearance</button><button class="tab" data-tab="doors" type="button">Doors</button><button class="tab" data-tab="import" type="button">Import Songs</button><button class="tab" data-tab="media" type="button">Media Library</button><button class="tab" data-tab="publish" type="button">Publish</button></nav>
+<nav class="tabs" aria-label="Editor sections"><button class="tab active" data-tab="appearance" type="button">Appearance</button><button class="tab" data-tab="doors" type="button">Doors</button><button class="tab" data-tab="order" type="button">Door Order</button><button class="tab" data-tab="import" type="button">Spreadsheet Import</button><button class="tab" data-tab="media" type="button">Media Library</button><button class="tab" data-tab="publish" type="button">Publish</button></nav>
 <div id="tab-appearance" class="tab-content">
 <label class="field"><span>Calendar title</span><input id="setting-title" value="Musical Advent Calendar" maxlength="95"></label>
 <label class="field"><span>Subtitle</span><input id="setting-subtitle" value="25 days of music & memories" maxlength="160"></label>
@@ -25,10 +25,17 @@
 <div class="previewbox" id="photo-preview"><span class="empty">Choose a photograph from the media library</span></div>
 <div class="btnrow"><button class="btn small ghost" id="door-test" type="button">Preview this door</button><button class="btn small ghost" id="go-media" type="button">Add media +</button></div>
 <div class="section"><h3>Test the published calendar</h3><p class="hint">See the real public layout with every door unlocked, regardless of date. Your visitors will still see the usual date locks. This uses your last published version, not unsaved draft changes.</p><a class="btn small ghost" id="public-preview-link" href="index.html?preview=1" target="_blank" rel="noopener noreferrer">🔓 Open unlocked public preview ↗</a></div>
-<div class="section"><h3>Song details</h3><p class="hint">Enter these manually or use Import Songs to fill multiple days at once.</p><label class="field"><span>Chosen by</span><input id="door-chosen-by" maxlength="120" placeholder="Person who chose the song"></label><label class="field"><span>Song title</span><input id="door-song-title" maxlength="200" placeholder="Song name"></label><label class="field"><span>Artist</span><input id="door-artist" maxlength="200" placeholder="Artist or band"></label></div>
+<div class="section"><h3>Song details</h3><p class="hint">Enter these manually or use Spreadsheet Import to fill multiple days at once.</p><label class="field"><span>Chosen by</span><input id="door-chosen-by" maxlength="120" placeholder="Person who chose the song"></label><label class="field"><span>Song title</span><input id="door-song-title" maxlength="200" placeholder="Song name"></label><label class="field"><span>Artist</span><input id="door-artist" maxlength="200" placeholder="Artist or band"></label></div>
 <label class="field"><span>Title shown when opened (optional)</span><input id="door-title" maxlength="100" placeholder="A Christmas memory"></label>
 <label class="field"><span>Personal message (optional)</span><textarea id="door-message" maxlength="1500" placeholder="Write a message to appear behind the door..."></textarea></label>
 <p class="hint">Click a number in the live preview to switch doors. Dates are enforced on the public site, not in the editor.</p></div>
+<div id="tab-order" class="tab-content hidden">
+<h3>Door Order</h3>
+<p class="hint">Move a complete contribution to a different December date. The date stays fixed while the person's name, song, artist, photo, audio and message move together.</p>
+<div class="btnrow order-actions"><button id="order-shuffle" class="btn small ghost" type="button">Shuffle contents</button><button id="order-undo" class="btn small ghost" type="button" disabled>Undo last change</button></div>
+<div id="order-list" class="order-list" role="list" aria-label="Door contributions, December 1 to 25"></div>
+<p class="hint">Drag the handle to move a row, including on a phone. The arrows move one date at a time. These are draft changes until you save; the public calendar only changes when you publish.</p>
+</div>
 <div id="tab-import" class="tab-content hidden">
 <h3>Import song information</h3>
 <p class="hint">Import day, chosen-by name, song title and artist. Photos, audio files and personal messages are not changed. Import is one-time, not a live link.</p>
@@ -75,5 +82,5 @@
 <dialog id="test-dialog" class="dialog"><div class="dialog-inner"><div class="dialog-head"><div><div class="eyebrow" id="test-day">December 1</div><h2 id="test-title">Preview</h2></div><button class="close" id="test-close" type="button" aria-label="Close">×</button></div><div class="previewbox" id="test-image"></div><p id="test-message" class="reveal-message"></p><audio id="test-audio" controls style="width:100%" class="hidden"></audio></div></dialog>
 <footer class="editor-foot">Musical Advent Calendar Studio v1 · Built for Christmas 2026</footer>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" defer></script>
-<script src="editor.js?v=20261111subtitle1" defer></script>
+<script src="editor.js?v=20261111doororder1" defer></script>
 </body></html>
