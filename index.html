@@ -21,7 +21,7 @@
       <p class="reveal-message" id="dialog-message"></p><button class="btn hidden" id="door-play">♫ Play this song</button>
     </div>
   </dialog>
-  <div id="nowplaying" class="nowplaying hidden" role="status"><span aria-hidden="true">♫</span><div class="track"><small class="muted">Now playing</small><div class="trackname" id="playing-title"></div></div><button id="toggle-play" aria-label="Pause or resume">❚❚</button><button id="stop-play" aria-label="Stop">×</button></div>
+  <div id="nowplaying" class="nowplaying hidden" role="status"><span aria-hidden="true">♫</span><div class="track"><small class="muted">Now playing</small><div class="trackname" id="playing-title"></div><div class="seek-row"><span id="elapsed-time">0:00</span><input id="song-seek" type="range" min="0" max="100" step="0.1" value="0" aria-label="Seek within song"><span id="total-time">0:00</span></div></div><button id="toggle-play" aria-label="Pause or resume">❚❚</button><button id="stop-play" aria-label="Stop">×</button></div>
   <script src="calendar.js" defer></script>
 </body>
 </html>
