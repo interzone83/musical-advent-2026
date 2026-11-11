@@ -4,7 +4,7 @@
   "theme": {
     "preset": "forest",
     "accent": "#ff4d4d",
-    "snow": false,
+    "snow": true,
     "shape": "soft",
     "layout": "grid",
     "title": "Musical Advent Calendar",
@@ -14,7 +14,7 @@
     {
       "day": 1,
       "photo": "media/photos/bcfcefabf8db14a422fc947a54969744.jpg",
-      "song": "media/music/f01a182a03c42f45212512d0f04375e2.mp3",
+      "song": "media/music/17af85514c9fdab920330b26e14f9920.mp3",
       "title": "",
       "message": "",
       "chosenBy": "Papou",
