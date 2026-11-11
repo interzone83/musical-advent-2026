@@ -16,3 +16,21 @@
 .background-image-thumb{width:92px;height:60px;flex-shrink:0;object-fit:cover;border-radius:9px;border:1px solid var(--edge)}
 .media-kind-tabs{margin:12px 0 15px}
 .seek-row{display:flex;align-items:center;gap:8px;margin-top:5px;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}.seek-row input[type=range]{width:100%;min-width:40px;flex:1;accent-color:var(--accent);cursor:pointer}.seek-row input[type=range]:disabled{opacity:.4;cursor:default}.nowplaying .track{min-width:0}@media(max-width:600px){.nowplaying{gap:8px;padding:10px}.nowplaying button{padding:8px}.seek-row{gap:5px}}
+
+/* Independent Door Order controls. Rows move content, never dates or appearance. */
+.order-actions{margin:12px 0 16px}
+.order-list{display:grid;gap:8px;margin:12px 0 16px}
+.order-row{display:flex;align-items:center;gap:8px;min-width:0;padding:8px;background:rgba(255,255,255,.045);border:1px solid var(--edge);border-radius:12px;transition:border-color .12s,background .12s}
+.order-row.is-dragging{opacity:.45}
+.order-row.drop-target{border-color:var(--accent);background:rgba(233,200,138,.16);outline:2px solid var(--accent);outline-offset:1px}
+.order-handle{display:grid;place-items:center;flex:0 0 29px;min-height:42px;border:1px solid var(--edge);border-radius:8px;background:rgba(255,255,255,.06);color:var(--accent);font-size:1.3rem;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.order-handle:active{cursor:grabbing}
+.order-date{flex:0 0 49px;color:var(--accent);font-size:.8rem;font-weight:700;white-space:nowrap}
+.order-details{min-width:0;flex:1;display:flex;flex-direction:column;gap:1px}
+.order-details strong,.order-details small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.order-details strong{font-size:.88rem}
+.order-details small{font-size:.75rem;color:var(--muted)}
+.order-controls{display:flex;flex-direction:column;gap:3px}
+.order-step{min-width:28px;min-height:26px;border:1px solid var(--edge);background:rgba(255,255,255,.06);color:var(--ink);border-radius:6px;line-height:1}
+.order-step:disabled{opacity:.2;cursor:not-allowed}
+@media(max-width:420px){.order-row{gap:6px;padding:7px 5px}.order-date{flex-basis:43px;font-size:.75rem}.order-handle{flex-basis:27px}.order-details small{font-size:.71rem}}
