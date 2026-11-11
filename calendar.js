@@ -9,7 +9,7 @@ const previewMode=new URLSearchParams(location.search).get('preview')==='1';
 let cfg=DEFAULT;let currentAudio=null;let activeTrack='';let activeDay=null;const previewOpened={};
 const safeText=s=>typeof s==='string'?s:'';
 function theme(t){t={...DEFAULT.theme,...t};const p=PRESETS[t.preset]||PRESETS.midnight;let s=document.documentElement.style;s.setProperty('--bg',p[0]);s.setProperty('--bg2',p[1]);s.setProperty('--door',p[2]+'d1');if(/^#[0-9a-f]{6}$/i.test(t.accent))s.setProperty('--accent',t.accent);document.body.classList.toggle('shape-square',t.shape==='square');document.body.classList.toggle('shape-pill',t.shape==='pill');document.body.classList.toggle('layout-staggered',t.layout==='staggered');$('calendar-title').textContent=t.title||DEFAULT.theme.title;$('calendar-subtitle').textContent=t.subtitle||DEFAULT.theme.subtitle;document.title=`${t.title||'Musical Advent Calendar'} ${cfg.year}`;snow(Boolean(t.snow));
-  const bg=(typeof t.backgroundImage==='string'&&/^media\/photos\/[a-z0-9_-]+\.(?:jpe?g|png|webp)$/i.test(t.backgroundImage))?t.backgroundImage:'';
+  const bg=(typeof t.backgroundImage==='string'&&/^media\/(?:photos|backgrounds)\/[a-z0-9_-]+\.(?:jpe?g|png|webp)$/i.test(t.backgroundImage))?t.backgroundImage:'';
   if(t.useBackgroundImage&&bg){
     document.body.style.backgroundImage='linear-gradient(rgba(16,24,42,.65),rgba(16,24,42,.78)),url("'+bg+'")';
     document.body.style.backgroundSize='cover';document.body.style.backgroundPosition='center';
