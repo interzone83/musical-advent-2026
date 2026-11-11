@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const DEFAULT={year:2026,theme:{preset:'midnight',accent:'#e9c88a',snow:true,useBackgroundImage:false,backgroundImage:'',shape:'soft',layout:'grid',title:'Musical Advent Calendar',subtitle:'25 days of music & memories'},doors:[]};
+const DEFAULT={year:2026,theme:{preset:'midnight',accent:'#e9c88a',snow:true,useBackgroundImage:false,backgroundImage:'',shape:'soft',layout:'grid',doorPositions:null,title:'Musical Advent Calendar',subtitle:'25 days of music & memories'},doors:[]};
 const PRESETS={midnight:['#10182a','#243859','#24344f'],forest:['#092a26','#244d41','#1b4c3d'],berry:['#301a2b','#642e43','#532a40']};
 const $=id=>document.getElementById(id);
 // An explicitly requested editor test mode: not authentication or a secure date restriction.
@@ -21,7 +21,12 @@ function eligible(d){if(previewMode)return true;const now=new Date(),year=Number
 function opened(){try{return JSON.parse(localStorage.getItem('advent-opened-'+cfg.year))||{}}catch{return {}}}
 function mark(d){if(previewMode){previewOpened[d]=true;return;}let a=opened();a[d]=true;try{localStorage.setItem('advent-opened-'+cfg.year,JSON.stringify(a))}catch{}}
 function door(d){return cfg.doors.find(x=>Number(x.day)===d)||{day:d};}
-function draw(){let grid=$('calendar-grid');grid.replaceChildren();let history=previewMode?previewOpened:opened();for(let n=1;n<=25;n++){let ok=eligible(n),d=door(n),isOpen=Boolean(history[n]);let b=document.createElement('button');b.type='button';b.className='door'+(ok?'':' locked')+(isOpen?' opened':'')+(isOpen&&d.photo?' photo-revealed':'');b.setAttribute('aria-label',`December ${n}: ${isOpen?'view opened door':ok?'open door':'locked until December '+n}`);b.setAttribute('aria-disabled',String(!ok));if(isOpen&&d.photo){let photo=document.createElement('img');photo.className='door-thumbnail';photo.src=d.photo;photo.alt='';photo.loading='lazy';b.append(photo);}let number=document.createElement('span');number.className='door-number';number.textContent=n;let word=document.createElement('span');word.className='door-word';word.textContent=isOpen?'Opened':previewMode?'Preview door':(ok?'Open door':'Locked');b.append(number,word);b.addEventListener('click',()=>{if(!ok)return;openDoor(n)});grid.append(b);}}
+function displayedDoorPositions(){
+  const p=cfg.theme?.doorPositions;
+  return Array.isArray(p)&&p.length===25&&p.every(day=>Number.isInteger(day)&&day>=1&&day<=25)&&new Set(p).size===25
+    ?p:Array.from({length:25},(_,i)=>i+1);
+}
+function draw(){let grid=$('calendar-grid');grid.replaceChildren();let history=previewMode?previewOpened:opened();for(const n of displayedDoorPositions()){let ok=eligible(n),d=door(n),isOpen=Boolean(history[n]);let b=document.createElement('button');b.type='button';b.className='door'+(ok?'':' locked')+(isOpen?' opened':'')+(isOpen&&d.photo?' photo-revealed':'');b.setAttribute('aria-label',`December ${n}: ${isOpen?'view opened door':ok?'open door':'locked until December '+n}`);b.setAttribute('aria-disabled',String(!ok));if(isOpen&&d.photo){let photo=document.createElement('img');photo.className='door-thumbnail';photo.src=d.photo;photo.alt='';photo.loading='lazy';b.append(photo);}let number=document.createElement('span');number.className='door-number';number.textContent=n;let word=document.createElement('span');word.className='door-word';word.textContent=isOpen?'Opened':previewMode?'Preview door':(ok?'Open door':'Locked');b.append(number,word);b.addEventListener('click',()=>{if(!ok)return;openDoor(n)});grid.append(b);}}
 function openDoor(n){
   stop(); activeDay=n; mark(n); draw();
   const d=door(n);
