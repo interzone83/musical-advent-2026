@@ -8,6 +8,7 @@
     "useBackgroundImage": true,
     "shape": "soft",
     "layout": "grid",
+    "doorPositions": null,
     "title": "Bruno's Musical Advent Calendar",
     "subtitle": "",
     "backgroundImage": "media/backgrounds/5e6cb231cabbe14f876ef5512e1818b7.jpg"
@@ -15,16 +16,6 @@
   "doors": [
     {
       "day": 1,
-      "photo": "media/photos/bcfcefabf8db14a422fc947a54969744.jpg",
-      "song": "media/music/17af85514c9fdab920330b26e14f9920.mp3",
-      "title": "",
-      "message": "",
-      "chosenBy": "Papou",
-      "songTitle": "La belle histoire",
-      "artist": "Henri Des"
-    },
-    {
-      "day": 2,
       "photo": "",
       "song": "media/music/011f055f41ca7685e70c1f32b22f0f4a.mp3",
       "title": "",
@@ -32,6 +23,16 @@
       "chosenBy": "Mamina",
       "songTitle": "J'ai une maison pleine de fenetres",
       "artist": "Anne Sylvestre"
+    },
+    {
+      "day": 2,
+      "photo": "media/photos/bcfcefabf8db14a422fc947a54969744.jpg",
+      "song": "media/music/17af85514c9fdab920330b26e14f9920.mp3",
+      "title": "",
+      "message": "",
+      "chosenBy": "Papou",
+      "songTitle": "La belle histoire",
+      "artist": "Henri Des"
     },
     {
       "day": 3,
